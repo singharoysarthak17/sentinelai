@@ -13,8 +13,10 @@ Takes a security alert, gathers evidence through permission-checked tools, has s
 - Deterministic risk scoring and a response planner constrained to an action catalog
 - RAG over policy documents: BM25 retrieval, per-role access control, quarantine of poisoned documents, policy citations
 - Tracing summary and a FastAPI service (incidents, trace, metrics, approvals)
+- MCP server (`mcp_servers/security_mcp.py`) exposing the same permission-checked, audited tools over the Model Context Protocol — read-only (query_logs, build_timeline, lookup_ip, get_user, search_policy). No high-impact action is reachable this way; those stay behind the approval gate.
 
-Coming: MCP tool server, A2A agent service, evaluation suite.
+Coming: A2A agent service, a formal evaluation suite (beyond unit tests).
+
 
 ## Setup
     python -m venv .venv
