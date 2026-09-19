@@ -1,0 +1,7 @@
+{
+  "model": "gemini-3.5-flash-lite",
+  "content": "```json\n{\n  \"actions\": [\n    {\n      \"action_type\": \"create_ticket\",\n      \"target\": \"priya.sharma\",\n      \"justification\": \"Create an incident ticket to track the account compromise involving 37 failed logins followed by a successful login from a malicious IP and unrecognised device.\",\n      \"evidence_ids\": [\n        \"LOG-1\",\n        \"LOG-2\",\n        \"TI-1\",\n        \"ID-1\"\n      ]\n    },\n    {\n      \"action_type\": \"block_ip_production\",\n      \"target\": \"203.0.113.10\",\n      \"justification\": \"Block the source IP confirmed by threat intelligence to have a malicious reputation for password-spraying and used in the account compromise.\",\n      \"evidence_ids\": [\n        \"LOG-1\",\n        \"LOG-2\",\n        \"TI-1\"\n      ],\n      \"policy_ids\": [\n        \"POL-001#2\"\n      ]\n    },\n    {\n      \"action_type\": \"disable_account\",\n      \"target\": \"priya.sharma\",\n      \"justification\": \"Disable the compromised privileged user account pending security lead approval and credential reset.\",\n      \"evidence_ids\": [\n        \"LOG-1\",\n        \"ID-1\"\n      ],\n      \"policy_ids\": [\n        \"POL-001#3\",\n        \"POL-003#2\"\n      ]\n    }\n  ]\n}\n```",
+  "input_tokens": 1575,
+  "output_tokens": 357,
+  "latency_s": 2.27
+}

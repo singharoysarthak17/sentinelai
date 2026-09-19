@@ -60,10 +60,13 @@ def _show(res: dict) -> None:
         print("   ", reason)
     resp = res["response"]
     print("\nRESPONSE:", resp.get("skipped", ""))
+    if resp.get("policy_chunks"):
+        print("   retrieved policy:", [c["chunk_id"] for c in resp["policy_chunks"]])
     for a in resp.get("requests", []):
-        print(f"   {a['action_id']}: {a['action_type']} -> {a['status']} ({a['reason']})")
+        print(f"   {a['action_id']}: {a['action_type']} -> {a['status']} "
+              f"(policy={a['parameters'].get('policy_ids')})")
     for d in resp.get("dropped", []):
-        print("   dropped:", d["reason"])
+        print("   dropped:", d["action"]["action_type"], "-", d["reason"])
 
 
 if __name__ == "__main__":

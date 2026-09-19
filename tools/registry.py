@@ -26,6 +26,7 @@ PERMISSIONS: dict[str, set[str]] = {
     "log_analysis": {"query_logs", "build_timeline"},
     "asset_identity": {"get_user"},
     "investigation": {"query_logs", "get_user", "lookup_ip", "build_timeline"},
+    "response": {"search_policy"},
 }
 
 
