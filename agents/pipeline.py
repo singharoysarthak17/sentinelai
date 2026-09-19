@@ -1,5 +1,6 @@
 import ipaddress
 import json
+import os
 from concurrent.futures import ThreadPoolExecutor
 from typing import Literal
 
@@ -100,10 +101,21 @@ SPECIALISTS = {
 def _collect(agent: str, incident_id: str, cfg: dict, alert: Alert) -> list[Evidence]:
     evidence: list[Evidence] = []
     for tool, params in cfg["calls"](alert):
-        r = call_tool(agent, incident_id, tool, **params)
-        if not r.ok:
-            raise RuntimeError(f"{tool} failed: {r.error}")
-        data = r.data
+        if agent == "threat_intel" and tool == "lookup_ip" and os.getenv("A2A_ENABLED") == "1":
+            # Delegate to the independent Threat Intel agent service over
+            # A2A (design doc Section 8) instead of calling the tool
+            # in-process. Same evidence shape either way, so nothing
+            # downstream needs to know which path was used.
+            from a2a.client import delegate_enrich_ip
+            res = delegate_enrich_ip(params["ip"], incident_id, requested_by=agent)
+            if res.status != "completed":
+                raise RuntimeError(f"a2a enrich_ip failed ({res.status}): {res.error}")
+            data = res.evidence[0]
+        else:
+            r = call_tool(agent, incident_id, tool, **params)
+            if not r.ok:
+                raise RuntimeError(f"{tool} failed: {r.error}")
+            data = r.data
         if tool == "query_logs":
             data = {"count": data["count"], "by_type": data["by_type"]}
         evidence.append(Evidence(

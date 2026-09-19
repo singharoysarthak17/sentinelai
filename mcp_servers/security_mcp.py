@@ -1,21 +1,3 @@
-"""Exposes the same permission-checked, audit-logged tools the agents use
-internally, over the Model Context Protocol, so any MCP-compatible client
-(Claude Desktop, an MCP inspector, another agent framework) can call them
-the same way SentinelAI's own agents do.
-
-This process is read-only by design: it is granted the "mcp_client"
-permission group in tools/registry.py, which covers SIEM, threat-intel,
-identity and knowledge lookups only. Write/high-impact actions
-(block_ip, disable_account, ...) stay behind guardrails/approval.py and
-are intentionally NOT exposed here — see Section 7's least-privilege
-policy and Section 9's action risk classes in the design doc.
-
-Run standalone (stdio transport, e.g. for Claude Desktop or `mcp dev`):
-    python -m mcp_servers.security_mcp
-
-Or import `mcp` and mount it in a larger app if you later add an HTTP
-transport.
-"""
 from __future__ import annotations
 
 from datetime import datetime
