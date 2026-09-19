@@ -27,7 +27,12 @@ PERMISSIONS: dict[str, set[str]] = {
     "asset_identity": {"get_user"},
     "investigation": {"query_logs", "get_user", "lookup_ip", "build_timeline"},
     "response": {"search_policy"},
+    # MCP clients (Section 7 of the design doc): read-only across SIEM,
+    # threat intel, identity and knowledge tools. No write/action tools are
+    # exposed here — that's an approval-gated path handled by guardrails/approval.py.
+    "mcp_client": {"query_logs", "build_timeline", "lookup_ip", "get_user", "search_policy"},
 }
+
 
 
 def tool(name: str, params_model: type[BaseModel]):
