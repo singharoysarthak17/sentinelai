@@ -1,0 +1,12 @@
+{
+  "203.0.113.10": {
+    "reputation": "malicious",
+    "confidence": 0.82,
+    "tags": [
+      "password-spraying"
+    ],
+    "sources": [
+      "synthetic-feed-A"
+    ]
+  }
+}

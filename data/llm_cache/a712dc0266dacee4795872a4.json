@@ -1,0 +1,7 @@
+{
+  "model": "gemini-3.5-flash-lite",
+  "content": "```json\n{\n  \"summary\": \"Analysis of the brute-force attempt followed by a successful login for user priya.sharma from IP 203.0.113.10, which has a malicious reputation for password spraying.\",\n  \"findings\": [\n    {\n      \"statement\": \"IP address 203.0.113.10 is flagged as malicious with tags for password-spraying at 0.82 confidence.\",\n      \"kind\": \"fact\",\n      \"evidence_ids\": [\n        \"TI-1\"\n      ],\n      \"confidence\": 1.0\n    },\n    {\n      \"statement\": \"The user account priya.sharma has likely been compromised via a password spraying or brute force attack from IP 203.0.113.10. This could be confirmed by checking post-authentication activity and user session logs for unauthorized actions.\",\n      \"kind\": \"hypothesis\",\n      \"evidence_ids\": [\n        \"TI-1\"\n      ],\n      \"confidence\": 0.85\n    },\n    {\n      \"statement\": \"Could not check the exact nature of post-login activities or whether multi-factor authentication was bypassed.\",\n      \"kind\": \"missing_evidence\",\n      \"confidence\": 1.0\n    }\n  ]\n}\n```",
+  "input_tokens": 1034,
+  "output_tokens": 301,
+  "latency_s": 3.14
+}

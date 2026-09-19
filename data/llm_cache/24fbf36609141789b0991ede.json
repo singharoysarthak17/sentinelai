@@ -1,0 +1,7 @@
+{
+  "model": "gemini-3.5-flash-lite",
+  "content": "```json\n{\n  \"initial_severity\": \"high\",\n  \"specialists\": [\n    \"log_analysis\",\n    \"asset_identity\",\n    \"threat_intel\"\n  ],\n  \"rationale\": \"The alert indicates a potential brute-force or credential-stuffing attack followed by a successful compromise from an unrecognized device and external IP. All three specialists are needed to analyze the authentication logs, verify user identity and normal behavior, and check the threat intelligence of the source IP.\"\n}\n```",
+  "input_tokens": 347,
+  "output_tokens": 111,
+  "latency_s": 1.62
+}
