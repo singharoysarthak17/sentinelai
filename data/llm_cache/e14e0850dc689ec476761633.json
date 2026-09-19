@@ -1,0 +1,7 @@
+{
+  "model": "gemini-3.5-flash-lite",
+  "content": "```json\n{\"issues\": []}\n```",
+  "input_tokens": 1643,
+  "output_tokens": 10,
+  "latency_s": 1.88
+}

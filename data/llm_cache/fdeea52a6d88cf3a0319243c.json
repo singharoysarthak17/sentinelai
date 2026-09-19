@@ -1,0 +1,7 @@
+{
+  "model": "gemini-3.5-flash-lite",
+  "content": "```json\n{\n  \"actions\": [\n    {\n      \"action_type\": \"create_ticket\",\n      \"target\": \"priya.sharma\",\n      \"justification\": \"Create an incident ticket to track the investigation and response for compromised privileged account priya.sharma following a brute-force attack from malicious IP 203.0.113.10.\",\n      \"evidence_ids\": [\n        \"LOG-1\",\n        \"LOG-2\",\n        \"TI-1\",\n        \"ID-1\"\n      ]\n    },\n    {\n      \"action_type\": \"disable_account\",\n      \"target\": \"priya.sharma\",\n      \"justification\": \"Disable the compromised privileged account priya.sharma immediately to prevent unauthorized access and potential data exfiltration after a successful brute-force login from an unknown device and malicious IP.\",\n      \"evidence_ids\": [\n        \"LOG-1\",\n        \"LOG-2\",\n        \"TI-1\",\n        \"ID-1\"\n      ]\n    },\n    {\n      \"action_type\": \"block_ip_production\",\n      \"target\": \"203.0.113.10\",\n      \"justification\": \"Block the malicious IP address 203.0.113.10 in production to halt ongoing password-spraying and brute-force attempts against organization assets.\",\n      \"evidence_ids\": [\n        \"LOG-1\",\n        \"LOG-2\",\n        \"TI-1\"\n      ]\n    }\n  ]\n}\n```",
+  "input_tokens": 1235,
+  "output_tokens": 360,
+  "latency_s": 4.92
+}

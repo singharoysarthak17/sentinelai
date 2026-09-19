@@ -1,0 +1,7 @@
+{
+  "model": "gemini-3.5-flash-lite",
+  "content": "```json\n{\n  \"checks\": [\n    {\n      \"fact_index\": 0,\n      \"supported\": true,\n      \"reason\": \"The cited log evidence directly supports the successful login details from Kolkata, IN using device LAP-001.\"\n    },\n    {\n      \"fact_index\": 1,\n      \"supported\": true,\n      \"reason\": \"The cited logs correctly record the 37 failed attempts and the subsequent successful login with the exact timestamps and device IDs.\"\n    },\n    {\n      \"fact_index\": 2,\n      \"supported\": true,\n      \"reason\": \"The identity record explicitly confirms user priya.sharma's role, department, usual geo, and known devices.\"\n    },\n    {\n      \"fact_index\": 3,\n      \"supported\": true,\n      \"reason\": \"The threat intelligence feed confirms the IP, reputation, confidence score, and password-spraying tag.\"\n    }\n  ]\n}\n```",
+  "input_tokens": 1486,
+  "output_tokens": 223,
+  "latency_s": 2.03
+}

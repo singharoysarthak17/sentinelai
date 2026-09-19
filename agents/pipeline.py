@@ -79,10 +79,14 @@ SPECIALISTS = {
     "log_analysis": {
         "prefix": "LOG", "source_type": "log",
         "role": "log analyst",
-        "task": ("Reconstruct what happened from the authentication logs: "
-                 "sequence, volume, timing, location and device changes."),
-        "calls": lambda a: [("build_timeline", {"principal": _principal(a)}),
-                            ("query_logs", {"principal": _principal(a), "limit": 1})],
+        "task": (
+            "Reconstruct what happened from the authentication logs: "
+            "sequence, volume, timing, location and device changes."
+        ),
+        "calls": lambda a: [
+            ("build_timeline", {"principal": _principal(a)}),
+            ("query_logs", {"principal": _principal(a), "limit": 1}),
+        ],
     },
     "asset_identity": {
         "prefix": "ID", "source_type": "identity",
@@ -153,12 +157,18 @@ def _safe_specialist(name: str, alert: Alert, incident_id: str) -> dict:
     try:
         return run_specialist(name, alert, incident_id)
     except Exception as e:  # one failing agent must not stop the investigation
-        audit({"event": "agent_failed", "agent": name, "incident_id": incident_id,
-               "error": str(e)[:300]})
+        audit(
+            {
+                "event": "agent_failed",
+                "agent": name,
+                "incident_id": incident_id,
+                "error": str(e)[:300],
+            }
+        )
         return {"agent": name, "error": str(e)}
 
 
-def run_investigation(alert: Alert, incident_id: str, results: list[dict]) -> IncidentNarrative:
+def run_investigation(alert: Alert, incident_id: str, results: list[dict], feedback: str = "") -> IncidentNarrative:
     evidence = [e for r in results for e in r["evidence"]]
     claims = "\n".join(
         f"### {r['agent']}\nsummary: {r['output'].summary}\n"
@@ -173,9 +183,20 @@ def run_investigation(alert: Alert, incident_id: str, results: list[dict]) -> In
             f"RAW EVIDENCE:\n{wrap_untrusted(_evidence_text(evidence), 'tool-results')}\n\n"
             f"SPECIALIST CLAIMS:\n{wrap_untrusted(claims, 'specialist-agents')}\n\n"
             f"{_schema(IncidentNarrative)}")
-    return complete_json([{"role": "system", "content": system},
-                          {"role": "user", "content": user}],
-                         IncidentNarrative, agent="investigation", incident_id=incident_id)
+    if feedback:
+            user += (
+            "\n\nA reviewer rejected your previous draft. Fix these problems and keep "
+            f"everything else grounded:\n{feedback}"
+        )
+    return complete_json(
+        [
+            {"role": "system", "content": system},
+            {"role": "user", "content": user},
+        ],
+        IncidentNarrative,
+        agent="investigation",
+        incident_id=incident_id,
+    )
 
 
 def investigate_multi(incident_id: str = "INC-DEMO-001", alert: Alert = DEMO_ALERT) -> dict:
@@ -200,18 +221,28 @@ def investigate_multi(incident_id: str = "INC-DEMO-001", alert: Alert = DEMO_ALE
         audit({"event": "guardrail_trip", "incident_id": incident_id,
                "kind": "injection", "patterns": hits})
     for r in results:
-        issues += check_grounding(r["output"].findings,
-                                  {e.evidence_id for e in r["evidence"]}, r["agent"])
+        issues += check_grounding(
+            r["output"].findings,
+            {e.evidence_id for e in r["evidence"]},
+            r["agent"],
+        )
 
     narrative = run_investigation(alert, incident_id, results)
-    issues += check_grounding(narrative.findings,
-                              {e.evidence_id for e in all_evidence}, "investigation")
+    issues += check_grounding(
+        narrative.findings,
+        {e.evidence_id for e in all_evidence},
+        "investigation",
+    )
     return {
         "plan": plan.model_dump(),
-        "specialists": {r["agent"]: {"summary": r["output"].summary,
-                                     "findings": [f.model_dump() for f in r["output"].findings],
-                                     "evidence": [e.model_dump() for e in r["evidence"]]}
-                        for r in results},
+        "specialists": {
+            r["agent"]: {
+                "summary": r["output"].summary,
+                "findings": [f.model_dump() for f in r["output"].findings],
+                "evidence": [e.model_dump() for e in r["evidence"]],
+            }
+            for r in results
+        },
         "narrative": narrative.model_dump(),
         "issues": issues,
     }
