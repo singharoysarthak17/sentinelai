@@ -89,3 +89,10 @@ def execute(action_id: str, token: str) -> ActionRequest:
         raise PermissionError("valid approval token required")
     _simulate(req)
     return req
+
+def get_action(action_id: str) -> ActionRequest:
+    return _get(action_id)
+
+
+def list_actions(incident_id: str) -> list[ActionRequest]:
+    return [a for a in _ACTIONS.values() if a.incident_id == incident_id]
