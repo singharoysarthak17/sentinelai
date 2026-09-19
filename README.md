@@ -35,5 +35,10 @@ Coming: A2A agent service, a formal evaluation suite (beyond unit tests).
 
 Open http://127.0.0.1:8000/docs, then: POST /incidents/demo, POST /incidents/{id}/investigate, POST /actions/{id}/approve, GET /incidents/{id}/trace.
 
+## Run the MCP server
+    python -m mcp_servers.security_mcp
+
+Speaks stdio MCP, so it can be pointed to from Claude Desktop, `mcp dev`, or any MCP-compatible client/inspector. It exposes only the read-only tools (`query_logs`, `build_timeline`, `lookup_ip`, `get_user`, `search_policy`); every call still goes through the same permission check and audit log as the agents use internally.
+
 ## Known limitations
 Approver identity is self-reported (production needs authentication and role checks). Incidents are held in memory. Retrieval is lexical (BM25); a dense retriever is not built yet.
