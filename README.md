@@ -79,14 +79,13 @@ Every finding is expected to cite supporting evidence, and policy-sensitive resp
   * Uses the same evidence and audit trail, but a different transport
   * In-process mode remains the default so tests stay fast
   * Set `A2A_THREAT_INTEL_URL` to a running `uvicorn` service to use a separate process
+* Evaluation suite at `evals/`:
 
-### Coming next
-
-A formal evaluation suite beyond unit tests:
-
-* Golden incidents
-* Retrieval and groundedness metrics
-* Regression scoring
+  * 40 golden cases across risk scoring, retrieval, grounding, safety, and one full end-to-end run
+  * Retrieval scored with MRR and hit@3; currently **MRR 1.0, hit@3 1.0**
+  * A regression gate (`evals/run.py`) that fails CI-style if any gating case regresses or retrieval quality drops below threshold
+  * Known, non-gating gaps are tracked as first-class cases rather than hidden: a maintenance-window false positive in risk scoring, and a paraphrased prompt-injection payload the current regex misses
+  * Wired into `pytest` via `tests/test_evals.py` so the gate runs alongside the rest of the suite
 
 ## Setup
 
@@ -211,6 +210,14 @@ or:
 uvicorn app.main:app
 ```
 
+## Run the evaluation suite
+
+```powershell
+python -m evals.run
+```
+
+This runs all 40 golden cases and prints a per-area pass/fail/known-gap breakdown, retrieval MRR and hit@3, the end-to-end run's token/LLM-call totals, and a final `GATE: PASS`/`FAIL`. A full report is also written to `evals/report.json`. The same gate runs automatically as part of `python -m pytest -q` via `tests/test_evals.py`.
+
 ## Security design
 
 SentinelAI is designed around **least privilege, evidence grounding, and human control**.
@@ -274,11 +281,10 @@ The demo uses synthetic data only and does not connect to real user accounts or 
 * Approver identity is currently self-reported. Production use would require authentication and role-based approval checks.
 * Incidents are currently held in memory.
 * Retrieval currently uses **BM25 lexical search**; a dense retriever has not yet been built.
-* The formal evaluation suite is still planned and will extend beyond the current unit tests.
+* Two gaps are explicitly tracked as non-gating cases in the eval suite rather than silently accepted: a maintenance-window burst of failed logins from a known device currently scores higher than ideal (no change-calendar context yet), and the prompt-injection scanner misses paraphrased attacks that avoid its trigger phrases (would need a classifier model rather than regex).
 
 ## Project status
 
-The current implementation includes the core multi-agent investigation pipeline, guardrails, deterministic risk scoring, policy RAG, FastAPI service, MCP integration, and A2A support.
+The implementation now covers every layer from the original design: the core multi-agent investigation pipeline, guardrails, deterministic risk scoring, policy RAG, FastAPI service, MCP integration, A2A support, and a golden-case evaluation suite with a regression gate.
 
-The next stage is to strengthen the evaluation and retrieval layers with formal benchmarks, groundedness metrics, and regression testing.
 
