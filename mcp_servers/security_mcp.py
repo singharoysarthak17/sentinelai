@@ -1,5 +1,5 @@
 from __future__ import annotations
-
+import os
 from datetime import datetime
 from typing import Optional
 
@@ -10,7 +10,7 @@ import tools.knowledge_tools  # noqa: F401  (registers search_policy)
 from tools.registry import call_tool
 
 AGENT = "mcp_client"
-
+SERVER_ROLE = os.getenv("MCP_POLICY_ROLE", "analyst")
 mcp = FastMCP(
     "sentinelai-security",
     instructions=(
@@ -73,12 +73,11 @@ def get_user(user: str, incident_id: Optional[str] = None) -> dict:
 
 
 @mcp.tool()
-def search_policy(query: str, role: str = "analyst", k: int = 3,
-                   incident_id: Optional[str] = None) -> dict:
-    """Search security policies/playbooks (BM25, role-scoped access
-    control). Returns cited chunks, never raw unfiltered documents."""
+def search_policy(query: str, k: int = 3, incident_id: Optional[str] = None) -> dict:
+    """Search security policies/playbooks (BM25). Access is scoped to the role
+    this server was started with; callers cannot choose their own role."""
     result = call_tool(AGENT, _incident_id(incident_id), "search_policy",
-                        query=query, role=role, k=k)
+                       query=query, role=SERVER_ROLE, k=k)
     return result.model_dump(mode="json")
 
 

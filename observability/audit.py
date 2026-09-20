@@ -9,7 +9,7 @@ _LOCK = threading.Lock()
 
 def audit(record: dict) -> None:
     record.setdefault("ts", datetime.now(timezone.utc).isoformat())
-    line = json.dumps(record) + "\n"
+    line = json.dumps(record, default=str) + "\n"
     with _LOCK:  # parallel agents must never interleave their writes
         AUDIT_FILE.parent.mkdir(parents=True, exist_ok=True)
         with AUDIT_FILE.open("a", encoding="utf-8") as f:
